@@ -1,0 +1,9 @@
+export default {
+  $schema: "http://json-schema.org/draft-04/schema#",
+  title: "image",
+  type: "object",
+  properties: {
+    title: { type: 'string' }
+  },
+  required: ['title']
+} as const;
