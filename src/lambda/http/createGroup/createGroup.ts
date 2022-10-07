@@ -1,7 +1,9 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { formatJSONResponse } from '@libs/api-gateway';
-import { middyfy } from '@libs/lambda';
+import middy from '@middy/core'
+import cors from '@middy/http-cors'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
+import {getUserId} from 'src/auth/utils'
 
 import * as AWS from 'aws-sdk'
 const uuid = require('uuid')
@@ -9,21 +11,23 @@ const uuid = require('uuid')
 const docClient = new AWS.DynamoDB.DocumentClient()
 const groupsTable = process.env.GROUPS_TABLE
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     console.log('Processing event: ', event)
     const itemId = uuid.v4()
 
-    console.log(event)
+    const parsedBody = JSON.parse(event.body)
 
-    let parsedBody;
-    if (event.body) {
-        parsedBody = JSON.parse(event.body)
-    }
+    const authorization = event.headers.Authorization
+    console.log("Authorization here", authorization)
+    const split = authorization.split(' ')
+    const jwtToken = split[1]
+    const userId = getUserId(jwtToken)
 
     const newItem = {
         id: itemId,
         name: parsedBody.name,
+        userId: userId,
         description: parsedBody.description
     }
 
@@ -34,14 +38,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     return {
         statusCode: 201,
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify({
             newItem
         })
     }
-};
+});
 
-export const main = middyfy(handler);
+handler.use(
+    cors({
+        credentials: true
+    })
+)
+
+// export const main = middyfy(handler);

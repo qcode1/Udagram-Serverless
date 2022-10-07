@@ -10,15 +10,26 @@
     "node": ">=14.15.0"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.4.0",
     "@middy/core": "^2.5.3",
+    "@middy/http-cors": "^3.5.0",
     "@middy/http-json-body-parser": "^2.5.3",
+    "@middy/secrets-manager": "^3.5.0",
+    "aws-elasticsearch-connector": "^9.2.0",
+    "elasticsearch": "^15.5.0",
+    "http-aws-es": "^6.0.0",
+    "jimp": "^0.16.2",
+    "jsonwebtoken": "^8.5.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.182.0",
     "@serverless/typescript": "^3.0.0",
     "@types/aws-lambda": "^8.10.71",
+    "@types/elasticsearch": "^5.0.40",
+    "@types/http-aws-es": "^6.0.2",
     "@types/node": "^14.14.25",
-    "aws-sdk": "^2.1225.0",
+    "aws-sdk": "^2.1227.0",
     "esbuild": "^0.14.11",
     "json-schema-to-ts": "^1.5.0",
     "serverless": "^3.0.0",
